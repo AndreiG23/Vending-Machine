@@ -16,16 +16,19 @@ namespace Vending_Machine
             this.price = price;
             this.stock = stock;
         }
+
         public string Name
         {
             get { return name; }
             set { name = value; }
         }
+
         public double Price
         {
             get { return price; }
             set { price = value; }
         }
+
         public int Stock
         {
             get { return stock; }

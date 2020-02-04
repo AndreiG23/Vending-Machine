@@ -4,9 +4,26 @@ using System.Text;
 
 namespace Vending_Machine
 {
-    class Repository
+    interface IRepository
+    {
+        List<Product> GetProducts();
+        void AddProduct(Product product);
+        void RemoveProduct(Product product);
+        void ModifyProduct(int index, Product product);
+        void Order(Product product);
+        List<string> GetOrderHistory();
+        double GetMoney();
+        List<Purchase> GetPurchases();
+        void Reset();
+    }
+
+    class Repository : IRepository
     {
         List<Product> products = new List<Product>();
+        List<Purchase> purchases = new List<Purchase>();
+        public List<string> OrderHistory = new List<string>();
+        public double Money = 0;
+
         public Repository()
         {
             FillwithProducts();
@@ -23,6 +40,13 @@ namespace Vending_Machine
             products.Add(new Product("Viva", 6.5, 5));
             products.Add(new Product("Red Bull", 5.0, 15));
         }
+
+        public void FillStock()
+        {
+            for (int i = 0; i < products.Count; i++)
+                products[i].Stock = 15;
+        }
+
         public List<Product> GetProducts()
         {
             return products;
@@ -37,10 +61,53 @@ namespace Vending_Machine
         {
             products.Remove(product);
         }
-        public void ModifyProduct(int index,string Name,double Price,int stock)
+
+        public List<Purchase> GetPurchases()
         {
-            products[index] = new Product(Name, Price, stock);
+            return purchases;
         }
 
+        public void Order(Product product)
+        {
+            bool itExists = false;
+            foreach (Purchase p in purchases)
+            {
+                if(product.Name==p.Product)
+                {
+                    p.Amount += 1;
+                    itExists = true;
+                }
+            }
+            if(!itExists)
+            {
+                Purchase p = new Purchase(product.Name, 1);
+                purchases.Add(p);
+            }
+            OrderHistory.Add(product.Name);
+            Money += product.Price;
+        }
+
+        public double GetMoney()
+        {
+            return Money;
+        }
+
+        public List<string> GetOrderHistory()
+        {
+            return OrderHistory;
+        }
+
+        public void ModifyProduct(int index,Product product)
+        {
+            products[index] = product;
+        }
+
+        public void Reset()
+        {
+            Money = 0;
+            purchases.Clear();
+            OrderHistory.Clear();
+            FillStock();
+        }
     }
 }

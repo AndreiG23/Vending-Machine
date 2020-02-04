@@ -7,129 +7,217 @@ namespace Vending_Machine
 {
     class UI
     {
-        Services service;
-        public UI(Services serv)
+        IServices service;
+        public UI(IServices serv)
         {
             this.service = serv;
-            
         }
-        public void print_AdminMenu()
+
+        public void PrintAdminMenu()
         {
-            Console.WriteLine("0.Exit");
+            Console.WriteLine("\n0.Exit");
             Console.WriteLine("1.Add Product");
             Console.WriteLine("2.Remove Product");
             Console.WriteLine("3.Modify Product");
+            Console.WriteLine("4.Reports");
+            Console.WriteLine("5.Reset and Fill");
         }
-        public void print_MainMenu()
+
+        public void PrintMainMenu()
         {
-            Console.WriteLine("0.Exit");
+            Console.WriteLine("\n0.Exit");
             Console.WriteLine("1.Client");
             Console.WriteLine("2.Admin\n");
         }
-        public void print_ClientMenu(List<Product> products)
+
+        public void PrintClientMenu(List<Product> products)
         {
-            Console.WriteLine("0.Exit");
+            Console.WriteLine("\n0.Exit");
             for (int i = 0; i < products.Count; i++)
             {
-                Console.WriteLine((i + 1).ToString() + "." + products[i].Name + "........." + products[i].Price+" RON");
+                int MenuIndex = i + 1;
+                string name = products[i].Name;
+                double price = products[i].Price;
+                Console.WriteLine($"{MenuIndex}.{ name }.........{ price } RON");
             }
         }
+
+        public void PrintProducts()
+        {
+            List<Product> products = service.GetProducts();
+            for (int i = 0; i < products.Count; i++)
+            {
+                int stock = products[i].Stock;
+                string name = products[i].Name;
+                double price = products[i].Price;
+                Console.WriteLine($"{i}.{ name }.........{ price } RON            Stock:{stock}");
+            }
+        }
+
         public void MainMenu()
         {
             bool isOpen = true;
-            while(isOpen)
+            while (isOpen)
             {
-                print_MainMenu();
+                PrintMainMenu();
                 string command = Console.ReadLine();
-
-                if(command=="0")
+                switch (command)
                 {
-                    isOpen = false;
-                }
-                else if(command=="1")
-                {
-                    ClientMenu();
-                }
-                else if (command == "2")
-                {
-                    AdminMenu();
+                    case "0":
+                        {
+                            isOpen = false;
+                            break;
+                        }
+                    case "1":
+                        {
+                            ClientMenu();
+                            break;
+                        }
+                    case "2":
+                        {
+                            AdminMenu();
+                            break;
+                        }
                 }
             }
         }
+
         public void ClientMenu()
         {
             bool isOpen = true;
-            while(isOpen)
+            while (isOpen)
             {
-                List<Product> products = this.service.GetProducts();
-                print_ClientMenu(products);
+                List<Product> products = service.GetProducts();
+                PrintClientMenu(products);
                 string command = Console.ReadLine();
                 if (command == "0")
                 {
                     isOpen = false;
                 }
-                for(int i=0;i<products.Count;i++)
+
+                int index = 0;
+                bool InputIsInt = int.TryParse(command, out index);
+
+                if (isOpen &&InputIsInt && index>0 && index<products.Count+1)
                 {
-                    if(command==(i+1).ToString())
+                    try
                     {
-                        bool succes = true;
-                        try
-                        {
-                            this.service.Order(i);
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("Out of Stock");
-                            succes = false;
-                        }
-                        if (succes)
-                            Console.WriteLine(products[i].Name + " purchased");
+                        service.Order(index-1);
+                        Console.WriteLine(products[index-1].Name + " purchased");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
                     }
                 }
+
             }
         }
+
         public void AdminMenu()
         {
             bool isOpen = true;
             while (isOpen)
             {
-                print_AdminMenu();
+                PrintAdminMenu();
                 string command = Console.ReadLine();
-
-                if (command == "0")
+                switch (command)
                 {
-                    isOpen = false;
-                }
-                else if (command == "1")
-                {
-                    Console.WriteLine("Name:");
-                    string name = Console.ReadLine();
-                    Console.WriteLine("Price:");
-                    double price = Convert.ToDouble(Console.ReadLine());
-                    Console.WriteLine("Stock:");
-                    int stock = Convert.ToInt32(Console.ReadLine());
-                    this.service.AddProduct(name,price,stock);
-                }
-                else if (command == "2")
-                {
-                    Console.WriteLine("Index:");
-                    int index = Convert.ToInt32(Console.ReadLine());
-                    this.service.RemoveProduct(index-1);
-                }
-                else if (command == "3")
-                {
-                    Console.WriteLine("Index:");
-                    int index = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("Name:");
-                    string name = Console.ReadLine();
-                    Console.WriteLine("Price:");
-                    double price = Convert.ToDouble(Console.ReadLine());
-                    Console.WriteLine("Stock:");
-                    int stock = Convert.ToInt32(Console.ReadLine());
-                    this.service.ModifyProduct(index-1,name,price,stock);
+                    case "0":
+                        {
+                            isOpen = false;
+                            break;
+                        }
+                    case "1":
+                        {
+                            Console.WriteLine("Name:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Price:");
+                            string price = Console.ReadLine();
+                            Console.WriteLine("Stock:");
+                            string stock = Console.ReadLine();
+                            if (service.ValidInput(price,stock))
+                            {
+                                service.AddProduct(name, Convert.ToDouble(price),Convert.ToInt32(stock));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid Input");
+                            }
+                            break;
+                        }
+                    case "2":
+                        {
+                            PrintProducts();
+                            List<Product> products = service.GetProducts();
+                            Console.WriteLine("Which product would you like to remove?");
+                            Console.WriteLine("Index:");
+                            int index = Convert.ToInt32(Console.ReadLine());
+                            if(index>=0 && index <products.Count)
+                            {
+                                service.RemoveProduct(index);
+                            }
+                            else
+                            {
+                                Console.WriteLine("This product doesn't exist!!");
+                            }
+                            break;
+                        }
+                    case "3":
+                        {
+                            List<Product> products = service.GetProducts();
+                            PrintProducts();
+                            Console.WriteLine("Which product would you like to modify?");
+                            Console.WriteLine("Index:");
+                            int index = Convert.ToInt32(Console.ReadLine());
+                            if(index <= 0 || index > products.Count)
+                            {
+                                Console.WriteLine("This product doesn't exist!!");
+                                break;
+                            }
+                            Console.WriteLine("Name:");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Price:");
+                            string price = Console.ReadLine();
+                            Console.WriteLine("Stock:");
+                            string stock = Console.ReadLine();
+                            if (service.ValidInput(price,stock))
+                            {
+                                service.ModifyProduct(index, name, Convert.ToDouble(price), Convert.ToInt32(stock));
+                            }
+                            break;
+                        }
+                    case "4":
+                        {
+                            
+                            Console.WriteLine($"Money generated by Vending Machine: {service.GetMoney()} RON");
+                            List<Purchase> purchases=service.GetSortedProducts();
+                            Console.WriteLine("Most purchased products are:");
+                            for (int i = 0; i < purchases.Count; i++)
+                            {
+                                Console.WriteLine($"  {purchases[i].Amount}x{purchases[i].Product}");
+                            }
+                            Console.WriteLine("\nDo you want to see order history?(Y/N)");
+                            string cmd = Console.ReadLine();
+                            if (cmd.ToUpper()=="Y")
+                            {
+                                Console.WriteLine("Order History:");
+                                List<string> history = service.GetOrderHistory();
+                                for (int j = history.Count-1; j >=0; j--)
+                                {
+                                    Console.WriteLine(history[j]);
+                                }
+                            }
+                            break;
+                        }
+                    case "5":
+                        {
+                            service.Reset();
+                            Console.WriteLine("Vending Machine succesfully reseted");
+                            break;
+                        }
                 }
             }
-
         }
     }
 }
