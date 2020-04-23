@@ -13,7 +13,7 @@ namespace Vending_Machine_Controller
         void RemoveProduct(int index);
         void ModifyProduct(int index, string Name, double Price, int Stock);
         bool ValidInput(string Price, string Stock);
-        List<Purchase> GetSortedProducts();
+        IEnumerable<Purchase> GetSortedPurchases();
         double GetMoney();
         List<string> GetOrderHistory();
         void Reset();

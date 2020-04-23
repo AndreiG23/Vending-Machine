@@ -8,6 +8,7 @@ namespace Vending_Machine_Repo
     {
         private string ProductName;
         private int _amount;
+
         public Purchase(string productName, int amount)
         {
             this.ProductName = productName;

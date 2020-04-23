@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Vending_Machine_Repo
 {
-   
     public class ProductRepository : IRepository
     {
         List<Product> products = new List<Product>();
@@ -58,6 +57,7 @@ namespace Vending_Machine_Repo
         public void Order(Product product)
         {
             bool itExists = false;
+
             foreach (Purchase p in purchases)
             {
                 if (product.Name == p.Product)

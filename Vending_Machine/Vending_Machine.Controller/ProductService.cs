@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Vending_Machine_Repo;
 
 namespace Vending_Machine_Controller
 {
-
     public class ProductService : IService
     {
         IRepository repository;
@@ -50,24 +50,14 @@ namespace Vending_Machine_Controller
             }
         }
 
-        public List<Purchase> GetSortedProducts()
+        public IEnumerable<Purchase> GetSortedPurchases()
         {
             List<Purchase> purchases = repository.GetPurchases();
-
-            for (int i = 0; i < purchases.Count - 1; i++)
-            {
-                for (int j = i + 1; j < purchases.Count; j++)
-                {
-                    if (purchases[i].Amount < purchases[j].Amount)
-                    {
-                        Purchase aux = purchases[j];
-                        purchases[j] = purchases[i];
-                        purchases[i] = aux;
-                    }
-                }
-            }
-
-            return purchases;
+            IEnumerable<Purchase> sortedPurchases = (from purchase in purchases
+                                  orderby purchase.Amount descending
+                                  select purchase).Take(10);
+            
+            return sortedPurchases;
         }
 
         public void AddProduct(string Name, double Price, int Stock)
