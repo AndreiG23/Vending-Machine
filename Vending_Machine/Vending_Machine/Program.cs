@@ -11,8 +11,8 @@ namespace Vending_Machine_UI
     {
         public static void Main()
         {
-            Repository repo = new Repository();
-            Services service = new Services(repo);
+            ProductRepository repo = new ProductRepository();
+            ProductService service = new ProductService(repo);
             UI ui = new UI(service);
             ui.MainMenu();
         }

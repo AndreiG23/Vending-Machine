@@ -4,27 +4,15 @@ using System.Text;
 
 namespace Vending_Machine_Repo
 {
-    public interface IRepository
-    {
-        List<Product> GetProducts();
-        void AddProduct(Product product);
-        void RemoveProduct(Product product);
-        void ModifyProduct(int index, Product product);
-        void Order(Product product);
-        List<string> GetOrderHistory();
-        double GetMoney();
-        List<Purchase> GetPurchases();
-        void Reset();
-    }
-
-    public class Repository : IRepository
+   
+    public class ProductRepository : IRepository
     {
         List<Product> products = new List<Product>();
         List<Purchase> purchases = new List<Purchase>();
         public List<string> OrderHistory = new List<string>();
         public double Money = 0;
 
-        public Repository()
+        public ProductRepository()
         {
             FillwithProducts();
         }

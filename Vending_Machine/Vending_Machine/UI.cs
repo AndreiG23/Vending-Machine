@@ -9,8 +9,8 @@ namespace Vending_Machine_UI
 {
     public class UI
     {
-        IServices service;
-        public UI(IServices serv)
+        IService service;
+        public UI(IService serv)
         {
             this.service = serv;
         }
