@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Vending_Machine_Repo\Vending_Machine.Repo.csproj" />
   </ItemGroup>
 
