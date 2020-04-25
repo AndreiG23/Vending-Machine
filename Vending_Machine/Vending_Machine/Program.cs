@@ -10,6 +10,7 @@ namespace Vending_Machine_UI
     {
         public static void Main()
         {
+            //merge test
             ProductRepository repo = new ProductRepository();
             ProductService service = new ProductService(repo);
             UI ui = new UI(service);
