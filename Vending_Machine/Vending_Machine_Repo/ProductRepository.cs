@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Vending_Machine_Repo
 {
+    public class ProductDbContext: DbContext
+    {
+        public DbSet<Product> Products { get; set; }
+    }
     public class ProductRepository : IRepository
     {
         List<Product> products = new List<Product>();
