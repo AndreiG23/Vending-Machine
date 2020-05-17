@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
 namespace Vending_Machine_Repo
 {
